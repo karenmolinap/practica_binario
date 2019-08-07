@@ -12,7 +12,10 @@
         android:theme="@style/AppTheme">
         <activity android:name=".DragActivity" />
         <activity android:name=".DragActivity2" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Explicacion" android:title="Explicación"/>
+        <activity android:name=".Explicacion2" android:title="Explicación"/>
+        <activity android:name=".MainActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

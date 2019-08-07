@@ -86,6 +86,8 @@ public  int resourceId20 = R.drawable.veinte; // Valor del drawable 20
 
 //public static ArrayList<String> respuesta = new ArrayList<>(); // Arreglo de las respuestas dadas por el usuario
 public static String respuesta = "";
+public static String exp = "";
+public static int numerores = 0;
 
 // Layout de las casillas donde aparecerán las fichas para arrastrar.
 FrameLayout imgHolder1,imgHolder2,imgHolder3,imgHolder4,imgHolder5,imgHolder6,imgHolder7,imgHolder8,imgHolder9,imgHolder10;
@@ -228,6 +230,13 @@ public void onClick(View v)
  *
  */
 
+public void onClickSiguiente (View v) { obtenerSiguienteNumero (); }
+
+/**
+ * Controla click de Validar Respuesta
+ *
+ */
+
 public void onClickValidar (View v) { validarNumero (); }
 
 /**
@@ -348,10 +357,10 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
          System.out.println("  EL VALOR DE NUM ES "+num+" la respuesta dicha es = "+respuesta);
          if(respuesta.equals(Integer.toString(num))){
 
-             miAlertDialog("¡Correcta!\n"+num+"="+respuesta);
+             miAlertDialog("¡Correcta!\n"+num+" = "+respuesta);
 
          }else{
-             miAlertDialog("¡Incorrecta!\n"+num+"="+respuesta);
+             miAlertDialog("¡Incorrecta!\n"+num+" != "+respuesta);
          }
 
      }
@@ -373,9 +382,10 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
              .setNegativeButton("Explicación", new DialogInterface.OnClickListener() {
                  @Override
                  public void onClick(DialogInterface dialog, int which) {
-                     AD.setMessage("" + explicacion);
-                     AD.show();
-                     obtenerSiguienteNumero ();
+                     //AD.setMessage("" + explicacion);
+                     //AD.show();
+                     Intent intent2 = new Intent(getApplicationContext(), Explicacion.class);
+                     startActivity(intent2);
                  }
              });
      //Crea la caja de dialogo
@@ -384,12 +394,18 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
  }
 
  public void obtenerSiguienteNumero(){
+     exp = "";
+     numerores = 0;
      // Obtiene el número random decimal que aparecerá en la pantalla.
      num = rand.nextInt((20 - 0) + 1) + 0;
      // Convierte el número al resultado binario esperado
      binary = convertDecimalToBinary(num);
      convertBinaryToDecimal(binary);
 
+     for (int i = 0; i<Long.toString(binary).length();i++){
+         exp+=Long.toString(binary).charAt(i) + " ";
+     }
+     numerores = num;
      // Convierte el binario a string (para poder obtener la cantidad de cifras y poder dibujar las
      // casillas correspondientes en la pantalla.
      casillas = Long.toString(binary).length();
@@ -412,22 +428,18 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
 
  }
 
-    public static int convertBinaryToDecimal(long num){
-        explicacion = "Empieza por obtener el modulo de " + num + " entre 10 ";
+    public int convertBinaryToDecimal(long num){
         int decimalNumber = 0, i = 0;
         long remainder;
+        String chars = Long.toString(num);
         while (num != 0) {
             remainder = num % 10;
 
-            explicacion+="\nSe guarda el sobrante: " + remainder;
             num /= 10;
-            explicacion+="\nSe divide el número entre 10: " + num;
             decimalNumber += remainder * Math.pow(2, i);
-            explicacion+="\nAl resultado se suma el sobrante ( " + remainder + ") por el exponencial del número de iteraciones (" + i + ")";
             ++i;
 
         }
-        explicacion+="\n\nRESULTADO: " + decimalNumber;
         return decimalNumber;
     }
 

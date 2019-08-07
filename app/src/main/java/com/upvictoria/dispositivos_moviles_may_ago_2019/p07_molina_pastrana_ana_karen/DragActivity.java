@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 /**
 * Esta actividad presenta una pantalla con una cuadrícula en la que se pueden agregar y mover imágenes.
@@ -70,6 +71,8 @@ public static ArrayList<String> respuesta = new ArrayList<>(); // Arreglo de las
 // Layout de las casillas donde aparecerán las fichas para arrastrar.
 FrameLayout imgHolder1,imgHolder2,imgHolder3,imgHolder4,imgHolder5,imgHolder6,imgHolder7,imgHolder8,imgHolder9,imgHolder10;
 ArrayList<FrameLayout> frames =new ArrayList<>(); // Arraylist de los frames de las casillas
+public static String exp = "";
+public static int numerores = 0;
 
 TextView TV_Numero; // TextView de número a calcular
 Button BT_Salir; // Botón de salir al menú
@@ -122,12 +125,18 @@ public void addNewImageToScreen () {
     String str_bin = Long.toString(binary);
     // Recorre las casillas, dependiendo del resultado se envian las fichas de 0 o 1 además de la respuesta
     // al número generado aleatoriamente.
+    ArrayList<Integer> frame_num = new ArrayList<>(); // Arreglo de las respuestas dadas por el usuario
+    for(int i=0;i<casillas;i++){frame_num.add(i);}
+
+    Collections.shuffle(frame_num); // Revuelve los digitos del arreglo
+
     for(int i=0;i<casillas;i++) {
         if (str_bin.charAt(i) == '0') { // Si es cero
-            addNewImageToScreen(resourceIdCero, frames.get(i));
+            addNewImageToScreen(resourceIdCero, frames.get(frame_num.get(i)));
         } else { // Si es uno
-            addNewImageToScreen(resourceIdUno, frames.get(i));
+            addNewImageToScreen(resourceIdUno, frames.get(frame_num.get(i)));
         }
+
     }
 }
 
@@ -143,6 +152,13 @@ public void onClick(View v)
        toast ("Manten presionada la ficha para desplazarla por la pantalla.");
     }
 }
+
+/**
+ * Controla click de Validar Respuesta
+ *
+ */
+
+public void onClickSiguiente (View v) { obtenerSiguienteNumero (); }
 
 /**
  * Controla click de Validar Respuesta
@@ -284,9 +300,8 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
              .setNegativeButton("Explicación", new DialogInterface.OnClickListener() {
                  @Override
                  public void onClick(DialogInterface dialog, int which) {
-                     AD.setMessage("" + explicacion);
-                     AD.show();
-                     obtenerSiguienteNumero ();
+                     Intent intent2 = new Intent(getApplicationContext(), Explicacion2.class);
+                     startActivity(intent2);
                  }
              });
      //Crea la caja de dialogo
@@ -295,11 +310,16 @@ public void onClickAddImage (View v) { addNewImageToScreen (); }
  }
 
  public void obtenerSiguienteNumero(){
+     exp = "";
+     numerores = 0;
      // Obtiene el número random decimal que aparecerá en la pantalla.
      num = rand.nextInt((100 - 0) + 1) + 0;
      // Convierte el número al resultado binario esperado
      binary = convertDecimalToBinary(num);
-
+     numerores = num;
+     for (int i = 0; i<Long.toString(binary).length();i++){
+         exp+=Long.toString(binary).charAt(i) + " ";
+     }
      // Convierte el binario a string (para poder obtener la cantidad de cifras y poder dibujar las
      // casillas correspondientes en la pantalla.
      casillas = Long.toString(binary).length();
